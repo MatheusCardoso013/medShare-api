@@ -1,0 +1,17 @@
+# Pastas de compilação
+bin/
+obj/
+publish/
+
+# Banco de dados local (Não suba o arquivo .db!)
+*.db
+*.db-shm
+*.db-wal
+
+# Configurações de usuário e segredos
+.vs/
+.vscode/
+appsettings.Development.json
+
+# Arquivos de chave privada
+chave-medshare.pem
