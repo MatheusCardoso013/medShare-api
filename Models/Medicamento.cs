@@ -7,6 +7,5 @@ public class Medicamento
     public string Imagem { get; set; }
     // public string NomeDoador { get; set; }
     // public string TelefoneDoador { get; set; }
-    // public string CidadeDoador { get; set; }
-    // public string EstadoDoador { get; set; }
+    // public string DocumentoDoador { get; set; }
 }

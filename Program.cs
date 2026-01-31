@@ -6,17 +6,23 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configurar o banco de dados SQLite
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite("Data Source=medshare.db"));
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-// Adicionar serviços ao container
+var chaveJwt = builder.Configuration["JwtKey"] ?? "chave-fallback-apenas-para-desenvolvimento-32-chars";
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseMySql(
+        connectionString, 
+        ServerVersion.AutoDetect(connectionString)
+    ));
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "MedShare API", Version = "v1" });
 });
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
@@ -24,8 +30,6 @@ builder.Services.AddCors(options =>
               .AllowAnyHeader()
               .AllowAnyMethod());
 });
-
-var chaveJwt = "minha-chave-super-segura-com-32-caracteres!";
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -44,8 +48,11 @@ var app = builder.Build();
 
 app.UseCors("AllowAll");
 
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseAuthentication();
 app.UseAuthorization();
